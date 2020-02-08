@@ -24,7 +24,7 @@
 		VALUES ('".$spec."','".$surname."','".$name."','".$lastname."')";
 
 		if ($conn->query($sql) === TRUE) {
-		   header('location:index.php');
+		   header('location:doctors.php');
 		   $_SESSION['response']="Врач успешно добавлен в БД";
 		   $_SESSION['res_type']="success";
 		} else {
@@ -40,7 +40,7 @@
 		$stmt=$conn->prepare($query);
 		$stmt->bind_param("i",$id);
 		$stmt->execute();
-		header('location:index.php');
+		header('location:doctors.php');
 		   $_SESSION['response']="Врач успешно удален";
 		   $_SESSION['res_type']="danger";
 	}
@@ -79,13 +79,64 @@
 		   
 		   $_SESSION['response']="Врач успешно изменен.";
 		   $_SESSION['res_type']="primary";
-		   header('location:index.php');
+		   header('location:doctors.php');
 		} else {
 		   echo "Ошибка: " . $sql . "<br>" . $conn->error; 
 
 		}
 
 		}
+
+
+		if(isset($_GET['details'])){
+			$id=$_GET['details'];
+			$query="SELECT врач.кодВрача, специальность.название, врач.фамилия, врач.имя, врач.отчество FROM врач INNER JOIN специальность ON врач.специальность = специальность.кодСпец WHERE кодВрача=?";
+		
+			$stmt=$conn->prepare($query);
+			$stmt->bind_param("i",$id);
+			$stmt->execute();
+			$result=$stmt->get_result();
+			$row=$result->fetch_assoc();
+
+			$vid=$row['кодВрача'];
+			$vspec=$row['название'];
+			$vname=$row['имя'];
+			$vsurname=$row['фамилия'];
+			$vlastname=$row['отчество'];
+		}
+
+		  if(isset($_POST['login'])) {
+        $username= $_POST['username'];
+        $password= $_POST['password'];
+        $password = sha1($password);
+        $userType= $_POST['userType'];
+
+        $sql = "SELECT * from users WHERE username=? AND password=? AND user_type=?";
+
+        $stmt=$conn->prepare($sql);
+        $stmt->bind_param("sss",$username,$password,$userType);
+        $stmt->execute();
+        $result=$stmt->get_result();
+        $row=$result->fetch_assoc();
+
+        session_regenerate_id();
+        $_SESSION['username']=$row['username'];
+        $_SESSION['role']=$row['user_type'];
+        session_write_close();
+ 
+        if ($result->nuw_rows==1 && $_SESSION['role'] =="user"){
+            header("location:timetable.php");
+        }
+
+        else if ($result->nuw_rows==1 && $_SESSION['role'] =="admin"){
+            header("location:doctors.php");
+        }
+        else {
+            $msg = "Неверный логин или пароль";
+        }
+
+
+    }
 
 		
  ?>	

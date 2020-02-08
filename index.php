@@ -1,5 +1,11 @@
 <?php
+    session_start();
 	include 'action.php';
+
+    $msg="";
+
+  
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -21,131 +27,34 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-        <!-- Brand -->
-        <a class="navbar-brand" href="#">АИС"Октябрь"</a>
-        <!-- Toggler/collapsibe Button -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- Navbar links -->
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Врачи</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Специальности</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Расписание</a>
-                </li>
-            </ul>
-        </div>
-        <form class="form-inline" action="/action_page.php">
-            <input class="form-control mr-sm-2" type="text" placeholder="Поиск">
-            <button class="btn btn-primary" type="submit">Найти</button>
-        </form>
-    </nav>
-    <div class="container-fluid">
+<body class="bg-dark">
+    <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-10">
-                <h3 class="text-center text-dark mt-2">Добро пожаловать в автоматизированную информационную систему стоматологической клиники ООО"Октябрь"</h3>
-                <hr>
-                <?php if(isset($_SESSION['response'])) { ?>
-                <div class="alert alert-<?=$_SESSION['res_type']; ?> alert-dismissible text-center">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <?= $_SESSION['response']; ?>
-                </div>
-                <b>
-                    <?php } unset($_SESSION['response']); ?></b>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <h3 class="text-center text-info">Добавить запись</h3>
-                <form action="action.php" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value=" <?= $id; ?> ">
+            <div class="col-lg-5 bg-light mt-5 px-0">
+                <h3 class="text-center text-light bg-primary p-3">Авторизация</h3>
+                <form action="action.php" method="post" class="p-4">
                     <div class="form-group">
-                        <input type="text" name="name" value="<?= $name; ?>" class="form-control" placeholder="Введите имя" required>
+                        <input type="text" name="username" class="form-control form-control-lg" placeholder="Логин" required="">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="surname" value="<?=$surname; ?>" class="form-control" placeholder="Введите фамилию" required>
+                        <input type="password" name="password" class="form-control form-control-lg" placeholder="Пароль" required="">
+                    </div>
+                    <div class="form-group lead">
+                        <label for="userType">Права:</label>
+                        <input type="radio" name="userType" value="user" class="custom-radio" required>&nbsp;Пациент |
+                        <input type="radio" name="userType" value="admin" class="custom-radio" required>&nbsp;Администратор 
                     </div>
                     <div class="form-group">
-                        <input type="text" name="lastName" value="<?=$lastname; ?>" class="form-control" placeholder="Введите отчество">
+                        <input type="submit" name="login" class="btn btn-danger btn-block">
                     </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text" for="inputGroupSelect01">Специальность</label>
-                        </div>
-                        <select class="custom-select" id="inputGroupSelect01" name="spec" value="<?=$spec; ?>">
-                            <option value="2">Терапевт</option>
-                            <option value="3">Ортодонт</option>
-                            <option value="4">Ортопед</option>
-                            <option value="5">Пародонтолог</option>
-                            <option value="1" selected>Хирург</option>
-                            <option value="6">Зубной техник</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <?php  if($update==true) { ?>
-                        <input type="submit" name="update" class="btn btn-success btn-block" value="Изменить запись">
-                        <?php } else{ ?>
-                        <input type="submit" name="add" class="btn btn-primary btn-block" value="Добавить запись">
-                        <?php } ?>
-                    </div>
+                    <h5 class="text-danger text-center"> <?= $msg; ?> </h5>
                 </form>
-            </div>
-            <?php 
-            	$query="SELECT врач.кодВрача, специальность.название, врач.фамилия, врач.имя, врач.отчество FROM врач INNER JOIN специальность ON врач.специальность = специальность.кодСпец";
-            	$stmt=$conn->prepare($query);
-            	$stmt->execute();
-            	$result=$stmt->get_result();
-             ?>
-            <div class="col-md-8">
-                <h3 class="text-center text-info">Список врачей в базе данных</h3>
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Код</th>
-                            <th>Специальность</th>
-                            <th>Фамилия</th>
-                            <th>Имя</th>
-                            <th>Отчество</th>
-                            <th>Действие</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row=$result->fetch_assoc()){ ?>
-                        <tr>
-                            <td>
-                                <?=$row['кодВрача']; ?>
-                            </td>
-                            <td>
-                                <?=$row['название']; ?>
-                            </td>
-                            <td>
-                                <?=$row['фамилия']; ?>
-                            </td>
-                            <td>
-                                <?=$row['имя']; ?>
-                            </td>
-                            <td>
-                                <?=$row['отчество']; ?>
-                            </td>
-                            <td>
-                                <a href="details.php?details=<?= $row['кодВрача'];?>" class="badge badge-primary p-2">Подробнее</a> |
-                                <a href="action.php?delete=<?= $row['кодВрача'];?>" class="badge badge-danger p-2" onclick="return confirm('Вы действительно хотите удалить запись?');">Удалить</a> |
-                                <a href="index.php?edit=<?= $row['кодВрача'];?>" class="badge badge-success p-2">Изменить</a>
-                            </td>
-                        </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
+                
             </div>
         </div>
+    </div>
+    
+    
 </body>
 
 </html>
