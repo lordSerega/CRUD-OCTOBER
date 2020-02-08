@@ -56,40 +56,45 @@
                 <?php if(isset($_SESSION['response'])) { ?>
                 <div class="alert alert-<?=$_SESSION['res_type']; ?> alert-dismissible text-center">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <?= $_SESSION['response']; ?>
+                    <?= $_SESSION['response']; ?>
                 </div>
-           		<b><?php } unset($_SESSION['response']); ?></b>
+                <b>
+                    <?php } unset($_SESSION['response']); ?></b>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
                 <h3 class="text-center text-info">Добавить запись</h3>
-                <form action="action.php" method="post" enctype="multupart/form-data">
+                <form action="action.php" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value=" <?= $id; ?> ">
                     <div class="form-group">
-                        <input type="text" name="name" class="form-control" placeholder="Введите имя" required>
+                        <input type="text" name="name" value="<?= $name; ?>" class="form-control" placeholder="Введите имя" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="surname" class="form-control" placeholder="Введите фамилию" required>
+                        <input type="text" name="surname" value="<?=$surname; ?>" class="form-control" placeholder="Введите фамилию" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="lastName" class="form-control" placeholder="Введите отчество" required>
+                        <input type="text" name="lastName" value="<?=$lastname; ?>" class="form-control" placeholder="Введите отчество">
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="inputGroupSelect01">Специальность</label>
                         </div>
-                        <select class="custom-select" id="inputGroupSelect01" name="spec">
-                            <option selected>Выбрать...</option>
+                        <select class="custom-select" id="inputGroupSelect01" name="spec" value="<?=$spec; ?>">
                             <option value="2">Терапевт</option>
                             <option value="3">Ортодонт</option>
                             <option value="4">Ортопед</option>
                             <option value="5">Пародонтолог</option>
-                            <option value="1">Хирург</option>
+                            <option value="1" selected>Хирург</option>
                             <option value="6">Зубной техник</option>
                         </select>
                     </div>
                     <div class="form-group">
+                        <?php  if($update==true) { ?>
+                        <input type="submit" name="update" class="btn btn-success btn-block" value="Изменить запись">
+                        <?php } else{ ?>
                         <input type="submit" name="add" class="btn btn-primary btn-block" value="Добавить запись">
+                        <?php } ?>
                     </div>
                 </form>
             </div>
@@ -113,25 +118,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                    	<?php while ($row=$result->fetch_assoc()){ ?>
+                        <?php while ($row=$result->fetch_assoc()){ ?>
                         <tr>
-                            <td><?=$row['кодВрача']; ?></td>
-                            <td><?=$row['название']; ?></td>
-                            <td><?=$row['фамилия']; ?></td>
-                            <td><?=$row['имя']; ?></td>
-                            <td><?=$row['отчество']; ?></td>
+                            <td>
+                                <?=$row['кодВрача']; ?>
+                            </td>
+                            <td>
+                                <?=$row['название']; ?>
+                            </td>
+                            <td>
+                                <?=$row['фамилия']; ?>
+                            </td>
+                            <td>
+                                <?=$row['имя']; ?>
+                            </td>
+                            <td>
+                                <?=$row['отчество']; ?>
+                            </td>
                             <td>
                                 <a href="details.php?details=<?= $row['кодВрача'];?>" class="badge badge-primary p-2">Подробнее</a> |
-                                <a href="action.php?delete=<?= $row['кодВрача'];?>" class="badge badge-danger p-2">Удалить</a> |
+                                <a href="action.php?delete=<?= $row['кодВрача'];?>" class="badge badge-danger p-2" onclick="return confirm('Вы действительно хотите удалить запись?');">Удалить</a> |
                                 <a href="index.php?edit=<?= $row['кодВрача'];?>" class="badge badge-success p-2">Изменить</a>
                             </td>
                         </tr>
-                    <?php } ?>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
 </body>
 
 </html>
