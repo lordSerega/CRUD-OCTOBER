@@ -1,12 +1,46 @@
 <?php
     session_start();
-	include 'action.php';
+
+	$conn = new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");
 
     $msg="";
+
+    if(isset($_POST['login'])) {
+        $username= $_POST['username'];
+        $password= $_POST['password'];
+        $userType= $_POST['userType'];
+
+        $sql = "SELECT * from users WHERE username=? AND password=? AND user_type=?";
+
+        $stmt=$conn->prepare($sql);
+        $stmt->bind_param("sss",$username,$password,$userType);
+        $stmt->execute();
+        $result=$stmt->get_result();
+        $row=$result->fetch_assoc();
+
+        session_regenerate_id();
+        $_SESSION['username']=$row['username'];
+        $_SESSION['role']=$row['user_type'];
+        session_write_close();
+ 
+        if ($result->num_rows==1 && $_SESSION['role'] =="user"){
+            header("location:timetable.php");
+        }
+
+        else if ($result->num_rows==1 && $_SESSION['role'] =="admin"){
+            header("location:doctors.php");
+        }
+        else {
+            $msg = "Неверный логин или пароль";
+        }
+
+
+    }
 
   
 
 ?>
+
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -32,7 +66,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-5 bg-light mt-5 px-0">
                 <h3 class="text-center text-light bg-primary p-3">Авторизация</h3>
-                <form action="action.php" method="post" class="p-4">
+                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" class="p-4">
                     <div class="form-group">
                         <input type="text" name="username" class="form-control form-control-lg" placeholder="Логин" required="">
                     </div>

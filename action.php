@@ -105,38 +105,7 @@
 			$vlastname=$row['отчество'];
 		}
 
-		  if(isset($_POST['login'])) {
-        $username= $_POST['username'];
-        $password= $_POST['password'];
-        $password = sha1($password);
-        $userType= $_POST['userType'];
-
-        $sql = "SELECT * from users WHERE username=? AND password=? AND user_type=?";
-
-        $stmt=$conn->prepare($sql);
-        $stmt->bind_param("sss",$username,$password,$userType);
-        $stmt->execute();
-        $result=$stmt->get_result();
-        $row=$result->fetch_assoc();
-
-        session_regenerate_id();
-        $_SESSION['username']=$row['username'];
-        $_SESSION['role']=$row['user_type'];
-        session_write_close();
- 
-        if ($result->nuw_rows==1 && $_SESSION['role'] =="user"){
-            header("location:timetable.php");
-        }
-
-        else if ($result->nuw_rows==1 && $_SESSION['role'] =="admin"){
-            header("location:doctors.php");
-        }
-        else {
-            $msg = "Неверный логин или пароль";
-        }
-
-
-    }
+	
 
 		
  ?>	

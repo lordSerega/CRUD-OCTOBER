@@ -1,4 +1,8 @@
 <?php
+    session_start();
+    if (!isset($_SESSION['username'])|| $_SESSION['role']!="admin"){
+        header("location:index.php");
+    }
 	include 'action.php';
 ?>
 <!DOCTYPE html>
@@ -42,6 +46,10 @@
                     <a class="nav-link" href="#">Расписание</a>
                 </li>
             </ul>
+        </div>
+        <div>
+        <h5>Вы вошли как: <?= $_SESSION['username']?></h5>
+        <a href="logout.php">Выйти</a>
         </div>
         <form class="form-inline" action="/action_page.php">
             <input class="form-control mr-sm-2" type="text" placeholder="Поиск">
