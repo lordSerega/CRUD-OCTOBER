@@ -1,7 +1,7 @@
 <?php
  
     session_start();
-    if (!isset($_SESSION['username'])|| $_SESSION['role']!="user"){
+    if (!isset($_SESSION['username'])){
         header("location:index.php");
     }
 	include 'action.php';
@@ -51,13 +51,8 @@
             </ul>
         </div>
         <div>
-        <h5>Вы вошли как: <?= $_SESSION['username']?></h5>
-        <a href="logout.php">Выйти</a>
-        </div>
-        <form class="form-inline" action="/action_page.php">
-            <input class="form-control mr-sm-2" type="text" placeholder="Поиск">
-            <button class="btn btn-primary" type="submit">Найти</button>
-        </form>
+        <a class="navbar-brand" href="#">Вы вошли как: <?= $_SESSION['username']?></a>
+        <a href="logout.php" class="btn btn-danger" role="button">Выйти</a>
     </nav>
    
 </body>

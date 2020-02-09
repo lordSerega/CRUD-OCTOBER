@@ -43,10 +43,9 @@
                 </li>
             </ul>
         </div>
-        <form class="form-inline" action="/action_page.php">
-            <input class="form-control mr-sm-2" type="text" placeholder="Поиск">
-            <button class="btn btn-primary" type="submit">Найти</button>
-        </form>
+        <a class="navbar-brand" href="#">Вы вошли как: <?= $_SESSION['username']?></a>
+
+        <a href="logout.php" class="btn btn-danger" role="button">Выйти</a>
     </nav>
 
     <div class="container">
