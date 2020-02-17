@@ -26,7 +26,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <!-- Brand -->
         <a class="navbar-brand" href="#">АИС"Октябрь"</a>
         <!-- Toggler/collapsibe Button -->
@@ -37,13 +37,13 @@
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Врачи</a>
+                    <a class="nav-link active" href="doctors.php">Врачи</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Специальности</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Расписание</a>
+                    <a class="nav-link" href="calendar.php">Расписание</a>
                 </li>
             </ul>
         </div>
@@ -58,7 +58,7 @@
     </nav>
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-md-10">
+            <div class="col-lg-10">
                 <h3 class="text-center text-dark mt-2">Добро пожаловать в автоматизированную информационную систему стоматологической клиники ООО"Октябрь"</h3>
                 <hr>
                 <?php if(isset($_SESSION['response'])) { ?>
