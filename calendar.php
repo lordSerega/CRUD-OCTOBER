@@ -1,8 +1,12 @@
 <?php
+if (isset($_POST['selectedAll'])){
+    $doctor = $_POST['codeDoctor'];
+    $GLOBALS['$doctor'];
+}
    function build_calendar($month,$year){
     $mysqli = new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");
-    $stmt = $mysqli->prepare("select * from booking where MONTH(date) = ? AND YEAR(date) = ?");
-    $stmt->bind_param('ss', $month, $year);
+    $stmt = $mysqli->prepare("select * from booking where MONTH(date) = ? AND YEAR(date) = ? AND doctor= ?");
+    $stmt->bind_param('sss', $month, $year, $doctor);
     $bookings = array();
     if($stmt->execute()){
         $result = $stmt->get_result();
@@ -13,7 +17,10 @@
             
             $stmt->close();
         }
+
     }
+
+
 
     // Create array containing abbreviations of days of week.
     $daysOfWeek = array('Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенеье');
@@ -46,6 +53,7 @@
    
    $calendar = "<table class='table table-bordered'>";
    $calendar .= "<center><h2>$monthName $year</h2>";
+   $calendar .= "<h2>   $doctor</h2>";
 
    $calendar.= "<a class='btn btn-xs btn-primary' href='?month=".date('m', mktime(0, 0, 0, $month-1, 7, $year))."&year=".date('Y', mktime(0, 0, 0, $month-1, 7, $year))."'>Прошлый месяц</a> ";
     
@@ -102,10 +110,8 @@
          $today = $date==date('Y-m-d')? "today" : "";
       if($date<date('Y-m-d')){
           $calendar.="<td><h4>$currentDay</h4> <button class='btn btn-danger btn-xs'>Запись закрыта</button>";
-      }elseif(in_array($date, $bookings)){
-          $calendar.="<td class='$today'><h4>$currentDay</h4> <button class='btn btn-danger btn-xs'>Забронировано</button>";
-      }else{
-          $calendar.="<td class='$today'><h4>$currentDay</h4> <a href='book.php?date=".$date."' class='btn btn-success btn-xs'>Записаться</a>";
+       } else{
+          $calendar.="<td class='$today'><h4>$currentDay </h4> <a href='book.php?date=".$date.$doctor."' class='btn btn-success btn-xs'>Записаться</a>";
       }
          $calendar .="</td>";
 
@@ -134,6 +140,7 @@
     $calendar .= "</table>";
 
     echo $calendar;
+
 
 }
 ?>
@@ -172,7 +179,7 @@
                     <a class="nav-link" href="#">Специальности</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="calendar.php">Расписание</a>
+                    <a class="nav-link active" href="chooseDoctor.php">Расписание</a>
                 </li>
             </ul>
         </div>

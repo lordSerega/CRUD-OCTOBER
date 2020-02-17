@@ -1,7 +1,30 @@
 <?php
+$mysqli = new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");
 if(isset($_GET['date'])){
     $date = $_GET['date'];
+
+
+    echo $doctor;
+  
+    $stmt = $mysqli->prepare("select * from booking where date = ?");
+    $stmt->bind_param('s', $date);
+    $bookings = array();
+    if($stmt->execute()){
+        $result = $stmt->get_result();
+        if($result->num_rows>0){
+            while($row = $result->fetch_assoc()){
+                $bookings[] = $row['timeslot'];
+            }
+            
+            $stmt->close();
+            
+     
+    }
+    
 }
+
+}
+
 
 if(isset($_POST['submit'])){
     $fam = $_POST['fam'];
@@ -10,14 +33,28 @@ if(isset($_POST['submit'])){
     $oms = $_POST['oms'];
     $tel = $_POST['tel'];
     $email = $_POST['email'];
+    $timeslot = $_POST['timeslot'];
 
-    $mysqli =  new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");
-    $stmt = $mysqli->prepare("INSERT INTO booking (fam,name,ot4estvo,oms,tel,email,date) VALUES (?,?,?,?,?,?,?)");
-    $stmt->bind_param('sssssss', $fam, $name,$ot4estvo,$oms,$tel, $email, $date);
-    $stmt->execute();
-    $msg = "<div class='alert alert-success'>Вы успешно записались на прием. Вскоре, с вами свяжется администратор для подтверждения записи.</div>";
-    $stmt->close();
-    $mysqli->close();
+    $stmt = $mysqli->prepare("select * from booking where date = ? AND timeslot = ?");
+    $stmt->bind_param('ss', $date, $timeslot);
+    if($stmt->execute()){
+        $result = $stmt->get_result();
+        if($result->num_rows>0){
+        $msg = "<div class='alert alert-danger'>К сожалению, на это время уже записался другой пациент.</div>";
+            
+    } else {
+        $stmt = $mysqli->prepare("INSERT INTO booking (fam,name,ot4estvo,oms,tel,email,date,timeslot) VALUES (?,?,?,?,?,?,?,?)");
+        $stmt->bind_param('ssssssss', $fam, $name,$ot4estvo,$oms,$tel, $email, $date,$timeslot);
+        $stmt->execute();
+        $msg = "<div class='alert alert-success'>Вы успешно записались на прием. Вскоре, с вами свяжется администратор для подтверждения записи.</div>";
+        $bookings[]=$timeslot;
+        $stmt->close();
+        $mysqli->close();
+        
+    }
+}
+
+   
 }
 
 
@@ -87,7 +124,7 @@ function timeslots($duration,$cleanup,$start,$end){
                     <a class="nav-link" href="#">Специальности</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="calendar.php">Расписание</a>
+                    <a class="nav-link active" href="chooseDoctor.php">Расписание</a>
                 </li>
             </ul>
         </div>
@@ -103,24 +140,102 @@ function timeslots($duration,$cleanup,$start,$end){
     <div class="container">
         <h1 class="text-center">Записаться на: <?php echo date('d/m/Y', strtotime($date)); ?></h1><hr>
         <div class="row">
+        <div class="col-md-12">
+        <?php
+            echo isset($msg)?$msg:"";
+            ?>
+  
+        </div>
         <?php
             $timeslots = timeslots($duration,$cleanup,$start,$end);
                 foreach($timeslots as $ts){
-
-               
-
         ?>
         <div class="col-md-2">
             <div class="form-group">
-            <button class="btn btn-success"><?php echo $ts; ?></button>
+            <?php if(in_array($ts,$bookings)){ ?>
+
+            <button class="btn btn-danger"><?php echo $ts; ?></button>
+            <?php }else { ?>
+            <button class="btn btn-success book" data-timeslot="<?php echo $ts; ?>"><?php echo $ts; ?></button>
+            <?php } ?>
+
+            
             </div>
         </div>
-                <?php }?>
+             <?php }?>
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Запись на: <span id="slot"></span></h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+        <div class="col-md-12">
+        <form action="" method="post">
+        <div class="form-group">
+        <label for="">Время</label>
+        <input type="text" readonly name="timeslot" id="timeslot" class="form-control">
+        <div class="form-group">
+                        <label for="">Фамилия</label>
+                        <input type="text" class="form-control" name="fam">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Имя</label>
+                        <input type="text" class="form-control" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Отчество</label>
+                        <input type="text" class="form-control" name="ot4estvo">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Номер ОМС</label>
+                        <input type="text" class="form-control" name="oms">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Телефон</label>
+                        <input type="text" class="form-control" name="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Email</label>
+                        <input type="email" class="form-control" name="email">
+                    </div>
+                    <button class="btn btn-primary" type="submit" name="submit">Записаться</button>
+                    
+        </div>
+        </form>
+        </div>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+    $(".book").click(function(){
+        var timeslot = $(this).attr('data-timeslot');
+        $("#slot").html(timeslot);
+        $("#timeslot").val(timeslot);
+        
+        $("#myModal").modal("show");
+
+
+    })
+
+</script>
   </body>
 
 </html>
