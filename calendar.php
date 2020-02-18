@@ -1,7 +1,10 @@
 <?php
 if (isset($_POST['selectedAll'])){
     $doctor = $_POST['codeDoctor'];
-    $GLOBALS['$doctor'];
+    session_start();
+
+    $_SESSION['doctor'] = $doctor;
+    echo $doctor;
 }
    function build_calendar($month,$year){
     $mysqli = new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");
@@ -111,7 +114,7 @@ if (isset($_POST['selectedAll'])){
       if($date<date('Y-m-d')){
           $calendar.="<td><h4>$currentDay</h4> <button class='btn btn-danger btn-xs'>Запись закрыта</button>";
        } else{
-          $calendar.="<td class='$today'><h4>$currentDay </h4> <a href='book.php?date=".$date.$doctor."' class='btn btn-success btn-xs'>Записаться</a>";
+          $calendar.="<td class='$today'><h4>$currentDay </h4> <a href='book.php?date=".$date."' class='btn btn-success btn-xs'>Записаться</a>";
       }
          $calendar .="</td>";
 

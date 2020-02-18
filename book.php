@@ -1,10 +1,13 @@
 <?php
+ session_start();
+ echo $_SESSION['doctor'];
+
 $mysqli = new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");
 if(isset($_GET['date'])){
     $date = $_GET['date'];
 
 
-    echo $doctor;
+  
   
     $stmt = $mysqli->prepare("select * from booking where date = ?");
     $stmt->bind_param('s', $date);
@@ -43,8 +46,8 @@ if(isset($_POST['submit'])){
         $msg = "<div class='alert alert-danger'>К сожалению, на это время уже записался другой пациент.</div>";
             
     } else {
-        $stmt = $mysqli->prepare("INSERT INTO booking (fam,name,ot4estvo,oms,tel,email,date,timeslot) VALUES (?,?,?,?,?,?,?,?)");
-        $stmt->bind_param('ssssssss', $fam, $name,$ot4estvo,$oms,$tel, $email, $date,$timeslot);
+        $stmt = $mysqli->prepare("INSERT INTO booking (fam,name,ot4estvo,oms,tel,email,date,timeslot,doctor) VALUES (?,?,?,?,?,?,?,?,?)");
+        $stmt->bind_param('sssssssss', $fam, $name,$ot4estvo,$oms,$tel, $email, $date,$timeslot, $_SESSION['doctor']);
         $stmt->execute();
         $msg = "<div class='alert alert-success'>Вы успешно записались на прием. Вскоре, с вами свяжется администратор для подтверждения записи.</div>";
         $bookings[]=$timeslot;
