@@ -4,7 +4,7 @@ if (isset($_POST['selectedAll'])){
     session_start();
 
     $_SESSION['doctor'] = $doctor;
-    echo $doctor;
+
 }
    function build_calendar($month,$year){
     $mysqli = new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");

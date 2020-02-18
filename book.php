@@ -1,6 +1,6 @@
 <?php
  session_start();
- echo $_SESSION['doctor'];
+
 
 $mysqli = new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");
 if(isset($_GET['date'])){
@@ -9,8 +9,8 @@ if(isset($_GET['date'])){
 
   
   
-    $stmt = $mysqli->prepare("select * from booking where date = ?");
-    $stmt->bind_param('s', $date);
+    $stmt = $mysqli->prepare("select * from booking where date = ? and doctor = ?");
+    $stmt->bind_param('ss', $date,$_SESSION['doctor']);
     $bookings = array();
     if($stmt->execute()){
         $result = $stmt->get_result();
@@ -38,16 +38,23 @@ if(isset($_POST['submit'])){
     $email = $_POST['email'];
     $timeslot = $_POST['timeslot'];
 
-    $stmt = $mysqli->prepare("select * from booking where date = ? AND timeslot = ?");
-    $stmt->bind_param('ss', $date, $timeslot);
+    $stmt = $mysqli->prepare("select * from booking where date = ? AND timeslot = ? and doctor = ?");
+    $stmt->bind_param('sss', $date, $timeslot,$_SESSION['doctor']);
     if($stmt->execute()){
         $result = $stmt->get_result();
         if($result->num_rows>0){
         $msg = "<div class='alert alert-danger'>К сожалению, на это время уже записался другой пациент.</div>";
             
     } else {
-        $stmt = $mysqli->prepare("INSERT INTO booking (fam,name,ot4estvo,oms,tel,email,date,timeslot,doctor) VALUES (?,?,?,?,?,?,?,?,?)");
-        $stmt->bind_param('sssssssss', $fam, $name,$ot4estvo,$oms,$tel, $email, $date,$timeslot, $_SESSION['doctor']);
+    
+        $searchClient = $mysqli->query("SELECT id FROM users WHERE омс= $oms") or die($mysqli->error);
+        $rowS = $searchClient->fetch_array();
+        $id = $rowS['id'];
+
+        
+
+        $stmt = $mysqli->prepare("INSERT INTO booking (date,timeslot,doctor,user) VALUES (?,?,?,?)");
+        $stmt->bind_param('ssss',  $date,$timeslot, $_SESSION['doctor'],$id);
         $stmt->execute();
         $msg = "<div class='alert alert-success'>Вы успешно записались на прием. Вскоре, с вами свяжется администратор для подтверждения записи.</div>";
         $bookings[]=$timeslot;
@@ -189,27 +196,27 @@ function timeslots($duration,$cleanup,$start,$end){
         <input type="text" readonly name="timeslot" id="timeslot" class="form-control">
         <div class="form-group">
                         <label for="">Фамилия</label>
-                        <input type="text" class="form-control" name="fam">
+                        <input type="text" readonly class="form-control" name="fam" value="<?php echo  $_SESSION['fam']; ?>">
                     </div>
                     <div class="form-group">
                         <label for="">Имя</label>
-                        <input type="text" class="form-control" name="name">
+                        <input type="text" class="form-control" readonly  name="name" value="<?php echo  $_SESSION['name']; ?>" >
                     </div>
                     <div class="form-group">
                         <label for="">Отчество</label>
-                        <input type="text" class="form-control" name="ot4estvo">
+                        <input type="text" class="form-control" readonly name="ot4estvo" value="<?php echo  $_SESSION['ot4']; ?>">
                     </div>
                     <div class="form-group">
                         <label for="">Номер ОМС</label>
-                        <input type="text" class="form-control" name="oms">
+                        <input type="text" class="form-control" readonly  name="oms" value="<?php echo  $_SESSION['oms']; ?>">
                     </div>
                     <div class="form-group">
                         <label for="">Телефон</label>
-                        <input type="text" class="form-control" name="tel">
+                        <input type="text" class="form-control" name="tel" value="<?php echo  $_SESSION['tel']; ?>">
                     </div>
                     <div class="form-group">
                         <label for="">Email</label>
-                        <input type="email" class="form-control" name="email">
+                        <input type="email" class="form-control" name="email" value="<?php echo  $_SESSION['email']; ?>">
                     </div>
                     <button class="btn btn-primary" type="submit" name="submit">Записаться</button>
                     

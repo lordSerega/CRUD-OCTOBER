@@ -46,7 +46,7 @@
                     <a class="nav-link" href="#">Специальности</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Расписание</a>
+                    <a class="nav-link" href="chooseDoctor.php">Расписание</a>
                 </li>
             </ul>
         </div>

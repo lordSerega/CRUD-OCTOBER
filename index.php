@@ -21,6 +21,12 @@
         session_regenerate_id();
         $_SESSION['username']=$row['username'];
         $_SESSION['role']=$row['user_type'];
+        $_SESSION['fam']=$row['фамилия'];
+        $_SESSION['name']=$row['имя'];
+        $_SESSION['ot4']=$row['отчество'];
+        $_SESSION['email']=$row['email'];
+        $_SESSION['tel']=$row['номерТел'];
+        $_SESSION['oms']=$row['омс'];
         session_write_close();
  
         if ($result->num_rows==1 && $_SESSION['role'] =="user"){
@@ -51,6 +57,7 @@
     <meta name="viewport" content="width=device-width, install-scale=1,
 	shrink-to-fit=no ">
     <title>АИС "Октябрь"</title>
+    <link rel="stylesheet" href="css/register.css">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <!-- jQuery library -->
@@ -65,6 +72,14 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-5 bg-light mt-5 px-0">
+            <?php if(isset($_SESSION['response'])) { ?>
+                <div class="alert alert-<?=$_SESSION['res_type']; ?> alert-dismissible text-center">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <?= $_SESSION['response']; ?>
+                </div>
+                <b>
+                    <?php } unset($_SESSION['response']); ?></b>
+
                 <h3 class="text-center text-light bg-primary p-3">Авторизация</h3>
                 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" class="p-4">
                     <div class="form-group">
@@ -79,15 +94,19 @@
                         <input type="radio" name="userType" value="admin" class="custom-radio" required>&nbsp;Администратор 
                     </div>
                     <div class="form-group">
-                        <input type="submit" name="login" class="btn btn-danger btn-block">
+                        <input type="submit" name="login" class="btn btn-success btn-block" value="Войти">
                     </div>
+                    <div class="form-group">
+                    <a href="registration.php" class="btn btn-primary btn-block" role="button" aria-pressed="true">Зарегистрироваться</a>
+                    </div>
+                    
                     <h5 class="text-danger text-center"> <?= $msg; ?> </h5>
                 </form>
                 
             </div>
         </div>
     </div>
-    
+
     
 </body>
 
