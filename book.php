@@ -2,6 +2,7 @@
  session_start();
 
 
+
 $mysqli = new mysqli("kaplin-web.h1n.ru","kaplinadmin","parolAdmina","onlinerecord");
 if(isset($_GET['date'])){
     $date = $_GET['date'];

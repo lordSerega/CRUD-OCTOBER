@@ -83,7 +83,7 @@
 						<td><?php echo $row['имя']; ?></td>
                         <td><?php echo $row['отчество']; ?></td>
                         <td><form action="calendar.php" method="POST">	
-					
+						<input type="hidden" name="codeDoctor" class="form-control" value="<?php echo $row['кодВрача']; ?>">
 						<button type="submit" class="btn btn-success" name="selectedAll">Выбрать</button>
 						</form>							
 						</td>
