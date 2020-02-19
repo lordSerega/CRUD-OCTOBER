@@ -22,14 +22,19 @@
         $_SESSION['username']=$row['username'];
         $_SESSION['role']=$row['user_type'];
         $_SESSION['fam']=$row['фамилия'];
+        $_SESSION['password']=$row['password'];
+        $_SESSION['id']=$row['id'];
         $_SESSION['name']=$row['имя'];
         $_SESSION['ot4']=$row['отчество'];
         $_SESSION['email']=$row['email'];
         $_SESSION['tel']=$row['номерТел'];
         $_SESSION['oms']=$row['омс'];
+         $_SESSION['response']="Добро пожаловать в информационную систему OOO'Октябрь'";
+            $_SESSION['res_type']="info";
         session_write_close();
  
         if ($result->num_rows==1 && $_SESSION['role'] =="user"){
+
             header("location:timetable.php");
         }
 

@@ -127,20 +127,23 @@ function timeslots($duration,$cleanup,$start,$end){
         </button>
         <!-- Navbar links -->
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav">
+             <ul class="navbar-nav">
+                <?php  if (!isset($_SESSION['username'])|| $_SESSION['role']=="admin"){ ?>
                 <li class="nav-item">
                     <a class="nav-link" href="doctors.php">Врачи</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Специальности</a>
+                    <a class="nav-link" href="admin.php">Админская</a>
                 </li>
+            <?php  }else{ ?>
                 <li class="nav-item">
-                    <a class="nav-link active" href="chooseDoctor.php">Расписание</a>
+                    <a class="nav-link active" href="chooseDoctor.php">Записаться на прием</a>
                 </li>
+            <?php } ?>
             </ul>
         </div>
    
-        <a class="navbar-brand" href="#">Вы вошли как: <?= $_SESSION['username']?></a>
+        <a class="navbar-brand" href="timetable.php">Вы вошли как: <?= $_SESSION['username']?></a>
 
         <a href="logout.php" class="btn btn-danger" role="button">Выйти</a>
 

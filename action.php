@@ -1,5 +1,7 @@
 <?php
+error_reporting(-1);
 	session_start();
+	ini_set('display_errors', 1);
 	include 'config.php';
 
 	$update=false;
@@ -9,6 +11,7 @@
 	$name="";
 	$surname="";
 	$lastname="";
+	
 
 
 
@@ -45,6 +48,49 @@
 		   $_SESSION['res_type']="danger";
 	}
 
+	if(isset($_POST['addWeekend'])){
+		$id=$_POST['id'];
+		$date=$_POST['date'];
+
+
+		$duration = 30;
+	   	$cleanup = 0;
+	    $start = "09:00";
+	  	 $end = "20:00";
+
+	    $start = new DateTime($start);
+	    $end = new DateTime($end);
+	    $interval = new DateInterval("PT".$duration."M");
+	    $cleanupInterval = new DateInterval("PT".$cleanup."M");
+	    $slots = array();
+
+    for($intStart =$start;$intStart<$end; $intStart->add($interval)->add($cleanupInterval)){
+       $endPeriod = clone $intStart;
+       $endPeriod->add($interval);
+       if($endPeriod>$end){
+       break;
+       } 
+
+       $slots[] = $intStart->format("H:i")."-".$endPeriod->format("H:i");
+       $lol=21;
+
+
+       }
+
+		for($i=0;$i<=23;$i++){
+       $sql= "INSERT INTO booking (date,timeslot,doctor,user) VALUES ('$date','$slots[$i]','$id','$lol')" ;
+       if ($conn->query($sql) === TRUE) {
+		  
+		} else {
+		   echo "Ошибка: " . $sql . "<br>" . $conn->error; 
+
+		}
+    	}
+
+		header('location:admin.php');
+		   $_SESSION['response']="Ура! У врача появился выходной с:";
+		   $_SESSION['res_type']="danger";
+	}
 
 	if(isset($_GET['edit'])){
 		$id=$_GET['edit'];

@@ -35,20 +35,23 @@
         </button>
         <!-- Navbar links -->
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav">
+             <ul class="navbar-nav">
+                 <?php  if (!isset($_SESSION['username'])|| $_SESSION['role']=="admin"){ ?>
                 <li class="nav-item">
                     <a class="nav-link active" href="doctors.php">Врачи</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Специальности</a>
+                    <a class="nav-link" href="admin.php">Админская</a>
                 </li>
+            <?php  }else{ ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="calendar.php">Расписание</a>
+                    <a class="nav-link" href="chooseDoctor.php">Записаться на прием</a>
                 </li>
+            <?php } ?>
             </ul>
         </div>
    
-        <a class="navbar-brand" href="#">Вы вошли как: <?= $_SESSION['username']?></a>
+        <a class="navbar-brand" href="timetable.php">Вы вошли как: <?= $_SESSION['username']?></a>
 
         <a href="logout.php" class="btn btn-danger" role="button">Выйти</a>
 
@@ -59,7 +62,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <h3 class="text-center text-dark mt-2">Добро пожаловать в автоматизированную информационную систему стоматологической клиники ООО"Октябрь"</h3>
+                
                 <hr>
                 <?php if(isset($_SESSION['response'])) { ?>
                 <div class="alert alert-<?=$_SESSION['res_type']; ?> alert-dismissible text-center">
