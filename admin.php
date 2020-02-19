@@ -1,6 +1,5 @@
 <?php
-error_reporting(-1);
-    ini_set('display_errors', 1);
+
     session_start();
     if (!isset($_SESSION['username'])|| $_SESSION['role']!="admin"){
         header("location:index.php");
@@ -64,7 +63,7 @@ error_reporting(-1);
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <h3 class="text-center text-dark mt-2">Добро пожаловать в автоматизированную информационную систему стоматологической клиники ООО"Октябрь"</h3>
+                
                 <hr>
                 <?php if(isset($_SESSION['response'])) { ?>
                 <div class="alert alert-<?=$_SESSION['res_type']; ?> alert-dismissible text-center">
@@ -90,35 +89,97 @@ error_reporting(-1);
                     </div>
                 </form>
             </div>
+            <div class="col-md-8">
+                    <h3>Список приемов:</h3>
+                    <div class="form-inline m-lg-1">
+                        <label for="search" class="font-weight-bold lead text-dark">Найти запись</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" name="search" id="search_text" class="form-control" placeholder="Фамилия..">
+                    </div>
+                <?php 
+                
+                $query="SELECT
+                          booking.id,
+                          booking.date,
+                          booking.timeslot,
+                          врач.специальность,
+                          врач.фамилия,
+                          врач.имя,
+                          врач.отчество,
+                          users.фамилия as фамПац
+                        FROM booking
+                          INNER JOIN врач
+                            ON booking.doctor = врач.кодВрача
+                          INNER JOIN users
+                            ON booking.user = users.id
+                            WHERE users.фамилия <> 'ВЫХОДНОЙ'";
+                $stmt=$conn->prepare($query);
+                $stmt->execute();
+                $result=$stmt->get_result();
+             ?>
+             <table class="table table-hover" id="table-data">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Дата</th>
+                            <th>Время</th>
+                            <th>Врач</th>
+                            <th>Пациент</th>
+                   
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            while ($row=$result->fetch_assoc()){ ?>
+                        <tr>
+                            <td>
+                                <?=$row['id']; ?>
+                            </td>
+                            <td>
+                                <?=$row['date']; ?>
+                            </td>
+                            <td>
+                                <?=$row['timeslot']; ?>
+                            </td>
+                    
+                            <td>
+                                <?=  $row['фамилия']." ".$row['имя']." ".$row['отчество']; ?>
+                            </td>
+                              <td>
+                                <?=$row['фамПац']; ?>
+                            </td>
+                            <td>
+    
+                            
+                               
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="col-sm-12">
-                <h3>Список приемов у доктора:</h3>
-                    <form action="action.php" method="post" enctype="multipart/form-data">
-        
-                   
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#search_text").keyup(function(){
+                var search = $(this).val();
+                $.ajax({
+                    url:'searchDoctor.php',
+                    method: 'post',
+                    data: {query:search},
+                    success: function(response){
+                        $("#table-data").html(response);
+                    }
+                });
+            });
+
+        });
+    </script>
 
 
-              <?php
- 
-                $searchClient = $conn->query("SELECT * FROM врач") or die($mysqli->error);
-                echo "<select name='user_id'><option>Выберите врача</option>";
-                while ( $row = $searchClient->fetch_array()) {
-                    echo "<option value='" . $row['кодВрача'] . "'>" . $row['фамилия'] ." ". $row['имя'] ." ". $row['отчество'] . "</option>";
-                }
-                echo "</select>";
-            ?>
 
-             <div class="form-group">
-                        <input type="submit" name="selectDoctor" class="btn btn-primary btn-block" value="Добавить">
-                    </div>
-                </form>
 
-                
-            
-            </div>
 
-            
 </body>
 
 </html>

@@ -3,7 +3,7 @@
     if (!isset($_SESSION['username'])|| $_SESSION['role']!="admin"){
         header("location:index.php");
     }
-	include 'action.php';
+    include 'action.php';
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -13,7 +13,7 @@
     <meta name="author" content="Kaplin Sergey">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, install-scale=1,
-	shrink-to-fit=no ">
+    shrink-to-fit=no ">
     <title>АИС "Октябрь"</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
@@ -26,7 +26,7 @@
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <!-- Brand -->
         <a class="navbar-brand" href="#">АИС"Октябрь"</a>
         <!-- Toggler/collapsibe Button -->
@@ -35,34 +35,29 @@
         </button>
         <!-- Navbar links -->
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
-             <ul class="navbar-nav">
-                 <?php  if (!isset($_SESSION['username'])|| $_SESSION['role']=="admin"){ ?>
+            <ul class="navbar-nav">
+                <?php  if (!isset($_SESSION['username'])|| $_SESSION['role']=="admin"){ ?>
                 <li class="nav-item">
                     <a class="nav-link active" href="doctors.php">Врачи</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="admin.php">Админская</a>
                 </li>
-            <?php  }else{ ?>
+                <?php  }else{ ?>
                 <li class="nav-item">
                     <a class="nav-link" href="chooseDoctor.php">Записаться на прием</a>
                 </li>
-            <?php } ?>
+                <?php } ?>
             </ul>
         </div>
-   
-        <a class="navbar-brand" href="timetable.php">Вы вошли как: <?= $_SESSION['username']?></a>
-
+        <a class="navbar-brand" href="timetable.php">Вы вошли как:
+            <?= $_SESSION['username']?></a>
         <a href="logout.php" class="btn btn-danger" role="button">Выйти</a>
-
-        
         </div>
-        
     </nav>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                
                 <hr>
                 <?php if(isset($_SESSION['response'])) { ?>
                 <div class="alert alert-<?=$_SESSION['res_type']; ?> alert-dismissible text-center">
@@ -79,10 +74,10 @@
                 <form action="action.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id" value=" <?= $id; ?> ">
                     <div class="form-group">
-                        <input type="text" name="name" value="<?= $name; ?>" class="form-control" placeholder="Введите имя" required>
+                        <input type="text" name="surname" value="<?=$surname; ?>" class="form-control" placeholder="Введите фамилию" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="surname" value="<?=$surname; ?>" class="form-control" placeholder="Введите фамилию" required>
+                        <input type="text" name="name" value="<?= $name; ?>" class="form-control" placeholder="Введите имя" required>
                     </div>
                     <div class="form-group">
                         <input type="text" name="lastName" value="<?=$lastname; ?>" class="form-control" placeholder="Введите отчество">
@@ -110,10 +105,10 @@
                 </form>
             </div>
             <?php 
-            	$query="SELECT врач.кодВрача, специальность.название, врач.фамилия, врач.имя, врач.отчество FROM врач INNER JOIN специальность ON врач.специальность = специальность.кодСпец";
-            	$stmt=$conn->prepare($query);
-            	$stmt->execute();
-            	$result=$stmt->get_result();
+                $query="SELECT врач.кодВрача, специальность.название, врач.фамилия, врач.имя, врач.отчество FROM врач INNER JOIN специальность ON врач.специальность = специальность.кодСпец";
+                $stmt=$conn->prepare($query);
+                $stmt->execute();
+                $result=$stmt->get_result();
              ?>
             <div class="col-md-8">
                 <h3 class="text-center text-info">Список врачей в базе данных</h3>

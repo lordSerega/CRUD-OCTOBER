@@ -5,6 +5,7 @@ error_reporting(-1);
 	include 'config.php';
 
 	$update=false;
+	
 
 	$id="";
 	$spec="";
@@ -12,6 +13,10 @@ error_reporting(-1);
 	$surname="";
 	$lastname="";
 	
+
+
+
+
 
 
 
@@ -132,7 +137,6 @@ error_reporting(-1);
 		}
 
 		}
-
 
 		if(isset($_GET['details'])){
 			$id=$_GET['details'];
